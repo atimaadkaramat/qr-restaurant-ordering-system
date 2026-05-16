@@ -1,0 +1,51 @@
+{% extends "layout.html" %} {% block body %}
+
+<h1 class="mb-4">Your Cart</h1>
+
+{% if items %}
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Price</th>
+      <th>Quantity</th>
+      <th>Subtotal</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for item in items %}
+
+    <tr>
+      <td>{{ item.name }}</td>
+
+      <td>₹{{ item.price }}</td>
+
+      <td>{{ item.quantity }}</td>
+
+      <td>₹{{ item.subtotal }}</td>
+
+      <td>
+        <form action="/remove_from_cart/{{ item.id }}" method="POST">
+          <button class="btn btn-danger btn-sm">Remove</button>
+        </form>
+      </td>
+    </tr>
+
+    {% endfor %}
+  </tbody>
+</table>
+
+<h3>Total: ₹{{ total }}</h3>
+
+<form action="/place_order" method="POST">
+  <button class="btn btn-success">Place Order</button>
+</form>
+
+{% else %}
+
+<p>Your cart is empty.</p>
+
+{% endif %} {% endblock %}

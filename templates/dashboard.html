@@ -1,0 +1,93 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<h1 class="mb-4">
+    Chef Dashboard
+</h1>
+
+{% if order_data %}
+
+    {% for data in order_data %}
+
+    <div class="card mb-4">
+
+        <div class="card-body">
+
+            <h4>
+                Table {{ data.order['table_number'] }}
+            </h4>
+
+            <p>
+                Status:
+                <strong>
+                    {{ data.order['status'] }}
+                </strong>
+            </p>
+
+            <p>
+                Total:
+                ₹{{ data.order['total_price'] }}
+            </p>
+
+            <ul class="list-group mb-3">
+
+                {% for item in data['items'] %}
+
+                <li class="list-group-item">
+
+                    {{ item['quantity'] }} x {{ item['name'] }}
+
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+            <form
+                action="/update_status/{{ data.order['id'] }}"
+                method="POST"
+            >
+
+                <select
+                    name="status"
+                    class="form-select mb-2"
+                >
+
+                    <option value="Pending">
+                        Pending
+                    </option>
+
+                    <option value="Preparing">
+                        Preparing
+                    </option>
+
+                    <option value="Ready">
+                        Ready
+                    </option>
+
+                    <option value="Completed">
+                        Completed
+                    </option>
+
+                </select>
+
+                <button class="btn btn-primary">
+                    Update Status
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+{% else %}
+
+<p>No orders yet.</p>
+
+{% endif %}
+
+{% endblock %}
