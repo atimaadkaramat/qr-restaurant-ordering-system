@@ -1,93 +1,164 @@
-{% extends "layout.html" %}
+{% extends "layout.html" %} {% block body %}
 
-{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h1 class="fw-bold mb-1">Admin Dashboard</h1>
 
-<h1 class="mb-4">
-    Chef Dashboard
-</h1>
+    <p class="text-muted">Manage restaurant orders and workflow</p>
+  </div>
+
+  <div class="d-flex gap-2">
+    <a href="/edit_menu" class="btn btn-dark"> Edit Menu </a>
+
+    <form action="/clear_orders" method="POST">
+      <button
+        class="btn btn-danger"
+        onclick="return confirm('Clear ALL orders?');"
+      >
+        Clear Orders
+      </button>
+    </form>
+  </div>
+</div>
+
+<div class="row mb-5">
+  <div class="col-md-4">
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h6 class="text-muted">Total Orders</h6>
+
+        <h2 class="fw-bold">{{ order_data|length }}</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h6 class="text-muted">Pending Orders</h6>
+
+        <h2 class="fw-bold text-warning">
+          {{ order_data | selectattr("order.status", "equalto", "Pending") |
+          list | length }}
+        </h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h6 class="text-muted">Ready Orders</h6>
+
+        <h2 class="fw-bold text-success">
+          {{ order_data | selectattr("order.status", "equalto", "Ready") | list
+          | length }}
+        </h2>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% if order_data %}
 
-    {% for data in order_data %}
+<div class="row">
+  {% for data in order_data %}
 
-    <div class="card mb-4">
+  <div class="col-lg-6">
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h4 class="fw-bold mb-1">Table {{ data.order['table_number'] }}</h4>
 
-        <div class="card-body">
+            <small class="text-muted"> Order #{{ data.order['id'] }} </small>
+          </div>
 
-            <h4>
-                Table {{ data.order['table_number'] }}
-            </h4>
+          <div>
+            {% if data.order['status'] == "Pending" %}
 
-            <p>
-                Status:
-                <strong>
-                    {{ data.order['status'] }}
-                </strong>
-            </p>
+            <span class="badge bg-warning text-dark"> Pending </span>
 
-            <p>
-                Total:
-                ₹{{ data.order['total_price'] }}
-            </p>
+            {% elif data.order['status'] == "Preparing" %}
 
-            <ul class="list-group mb-3">
+            <span class="badge bg-primary"> Preparing </span>
 
-                {% for item in data['items'] %}
+            {% elif data.order['status'] == "Ready" %}
 
-                <li class="list-group-item">
+            <span class="badge bg-success"> Ready </span>
 
-                    {{ item['quantity'] }} x {{ item['name'] }}
+            {% else %}
 
-                </li>
+            <span class="badge bg-secondary"> Completed </span>
 
-                {% endfor %}
-
-            </ul>
-
-            <form
-                action="/update_status/{{ data.order['id'] }}"
-                method="POST"
-            >
-
-                <select
-                    name="status"
-                    class="form-select mb-2"
-                >
-
-                    <option value="Pending">
-                        Pending
-                    </option>
-
-                    <option value="Preparing">
-                        Preparing
-                    </option>
-
-                    <option value="Ready">
-                        Ready
-                    </option>
-
-                    <option value="Completed">
-                        Completed
-                    </option>
-
-                </select>
-
-                <button class="btn btn-primary">
-                    Update Status
-                </button>
-
-            </form>
-
+            {% endif %}
+          </div>
         </div>
 
-    </div>
+        <ul class="list-group mb-4">
+          {% for item in data['items'] %}
 
-    {% endfor %}
+          <li class="list-group-item d-flex justify-content-between">
+            <span> {{ item['name'] }} </span>
+
+            <strong> x{{ item['quantity'] }} </strong>
+          </li>
+
+          {% endfor %}
+        </ul>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Total: ₹{{ data.order['total_price'] }}</h5>
+        </div>
+
+        <form action="/update_status/{{ data.order['id'] }}" method="POST">
+          <div class="row g-2">
+            <div class="col-md-8">
+              <select name="status" class="form-select">
+                <option value="Pending">Pending</option>
+
+                <option value="Preparing">Preparing</option>
+
+                <option value="Ready">Ready</option>
+
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <button class="btn btn-dark w-100">Update</button>
+            </div>
+            {% if data.order['status'] == "Completed" %}
+
+            <form
+              action="/delete_order/{{ data.order['id'] }}"
+              method="POST"
+              class="mt-2"
+            >
+              <button
+                class="btn btn-outline-danger w-100"
+                onclick="return confirm('Clear this order?');"
+              >
+                Clear Order
+              </button>
+            </form>
+
+            {% endif %}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  {% endfor %}
+</div>
 
 {% else %}
 
-<p>No orders yet.</p>
+<div class="text-center mt-5">
+  <h3>No orders yet</h3>
 
-{% endif %}
+  <p class="text-muted">Incoming customer orders will appear here.</p>
+</div>
 
-{% endblock %}
+{% endif %} {% endblock %}

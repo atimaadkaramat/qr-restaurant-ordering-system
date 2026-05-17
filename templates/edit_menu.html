@@ -1,0 +1,181 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="row justify-content-center">
+
+    <div class="col-md-6">
+
+        <h1 class="mb-4">
+            Edit Menu
+        </h1>
+
+        <form action="/edit_menu" method="POST">
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Item Name
+                </label>
+
+                <input
+                    type="text"
+                    name="name"
+                    class="form-control"
+                    required
+                >
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Price
+                </label>
+
+                <input
+                    type="number"
+                    step="0.01"
+                    name="price"
+                    class="form-control"
+                    required
+                >
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Category
+                </label>
+
+                <select
+                    name="category"
+                    class="form-select"
+                    required
+                >
+
+                    <option value="">
+                        Select Category
+                    </option>
+
+                    <option value="Burger">
+                        Burger
+                    </option>
+
+                    <option value="Pizza">
+                        Pizza
+                    </option>
+
+                    <option value="Drinks">
+                        Drinks
+                    </option>
+
+                    <option value="Snacks">
+                        Snacks
+                    </option>
+
+                    <option value="Dessert">
+                        Dessert
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Image Filename
+                </label>
+
+                <input
+                    type="text"
+                    name="image"
+                    class="form-control"
+                    placeholder="example.jpg"
+                    required
+                >
+
+            </div>
+
+            <button class="btn btn-dark w-100">
+                Add Item
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<hr class="my-5">
+
+<h2 class="mb-4">
+    Existing Menu Items
+</h2>
+
+<div class="table-responsive">
+
+    <table class="table table-bordered table-hover align-middle">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>ID</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Image</th>
+                <th>Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for item in menu_items %}
+
+            <tr>
+
+                <td>{{ item['id'] }}</td>
+
+                <td>{{ item['name'] }}</td>
+
+                <td>{{ item['category'] }}</td>
+
+                <td>₹{{ item['price'] }}</td>
+
+                <td>{{ item['image'] }}</td>
+
+                <td>
+
+                    <form
+                        action="/delete_item/{{ item['id'] }}"
+                        method="POST"
+                    >
+
+                        <button
+                            class="btn btn-danger btn-sm"
+                            onclick="return confirm('Delete this item?')"
+                        >
+                            Delete
+                        </button>
+
+                    </form>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

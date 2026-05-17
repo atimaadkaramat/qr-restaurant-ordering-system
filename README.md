@@ -1,5 +1,27 @@
 # QR Restaurant Ordering System
 
-A web-based restaurant ordering system built with Flask, SQLite, HTML, CSS, and JavaScript.
+#### Video Demo:  <YOUR VIDEO URL HERE>
 
-Customers scan a QR code at their table to access the menu, place orders, and send them directly to the chef dashboard.
+#### Description:
+
+QR Restaurant Ordering System is a web-based restaurant management and ordering platform developed as my final project for CS50x by Harvard University. The goal of this project is to modernize the restaurant ordering experience by allowing customers to scan QR codes placed on restaurant tables, browse a digital menu, place orders directly from their phones, and track the status of their orders in real time. At the same time, restaurant staff and administrators can manage incoming orders and menu items through a dedicated admin dashboard.
+
+The application was built using Flask as the backend framework, SQLite as the database, HTML, CSS, Bootstrap, and Jinja templates for the frontend, and Python for server-side logic. The project focuses on creating a complete workflow between customers and restaurant staff while keeping the user interface simple, responsive, and easy to use.
+
+One of the core features of the project is the QR-based table system. Each table has its own QR code that links to a unique route such as `/table/1` or `/table/2`. When a customer scans the QR code, they are redirected to the digital menu for that table. The system stores the table ID in the session so the cart and orders remain associated with the correct table. I implemented logic to clear the cart automatically if the customer switches between tables to avoid incorrect orders being mixed together.
+
+The customer side of the application includes a dynamic menu system, cart functionality, quantity controls, order placement, and order tracking. Customers can add items to the cart, increase or decrease quantities, remove items entirely, and place their orders. Once an order is placed, the data is stored in the database using relational tables for orders and order items. Customers can also track the latest status of their order using the order tracking feature available from the homepage.
+
+The admin side of the project was designed as a protected dashboard that requires login authentication. I implemented session-based authentication using Flask sessions and Werkzeug password hashing. Only authenticated admins can access the dashboard and menu management pages. The admin dashboard displays incoming orders along with table numbers, ordered items, prices, and statuses. Restaurant staff can update order statuses between Pending, Preparing, Ready, and Completed. I also added functionality to clear individual orders as well as clear all orders from the dashboard for easier management and testing.
+
+Another important feature of the project is menu management. Administrators can add new menu items through the `/edit_menu` page. Each menu item includes a name, price, category, and image filename. Categories are selected using a dropdown menu instead of text input to maintain consistency in the database. Existing menu items are displayed in a management table where admins can also delete items directly from the interface. I separated menu management from the main dashboard because I wanted the admin dashboard to focus only on order handling while menu management remained organized in its own dedicated page.
+
+The database design was one of the most important parts of the project. I used SQLite with multiple related tables including `users`, `menu_items`, `orders`, and `order_items`. The `orders` table stores overall order information such as table number, total price, and status, while the `order_items` table stores the individual items belonging to each order. I decided to separate these tables instead of storing everything in one table because it follows better database normalization practices and allows one order to contain multiple menu items efficiently.
+
+I also spent time improving the overall user experience and interface design. Bootstrap was used heavily to create responsive layouts and styled components quickly. I added a navigation bar with conditional rendering depending on whether the user is an admin or customer. The footer was designed to stay at the bottom of every page using Flexbox layout utilities. Status badges were color-coded to make order states easier to identify visually.
+
+Some design decisions changed during development. Initially, I considered placing menu management directly inside the admin dashboard, but later decided to create a separate `/edit_menu` route for better organization and cleaner navigation. I also considered adding more advanced features such as payment gateways, real-time updates, and synchronized multi-device carts, but I intentionally avoided overcomplicating the project in order to keep it stable, maintainable, and suitable for the scope of a CS50 final project.
+
+The main files used in this project include `app.py`, which contains all Flask routes and backend logic, multiple HTML templates stored in the `templates` folder, a `style.css` file for custom styling, a SQLite database file named `restaurant.db`, and a QR code generation script used to create QR images for restaurant tables. The project also includes session handling, route protection, form handling, and database interaction using SQLite queries.
+
+Overall, this project demonstrates full-stack web development concepts including authentication, database management, CRUD operations, session handling, responsive frontend design, and workflow-based application architecture. Through this project, I gained practical experience building a real-world web application from scratch and learned how frontend, backend, and databases work together to create a complete user experience.

@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>QR Restaurant System</title>
@@ -17,14 +18,39 @@
     />
   </head>
 
-  <body>
+  <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-dark bg-dark">
       <div class="container-fluid">
-        <span class="navbar-brand mb-0 h1"> QR Restaurant </span>
-        <a href="/cart" class="btn btn-outline-light"> Cart </a>
+        <a class="navbar-brand" href="/"> QR Restaurant </a>
+
+        <div class="d-flex gap-2">
+          {% if session.get("admin_id") %}
+
+          <a href="/admin" class="btn btn-outline-light"> Dashboard </a>
+
+          <a href="/edit_menu" class="btn btn-success"> Edit Menu </a>
+
+          <a href="/logout" class="btn btn-outline-danger"> Logout </a>
+
+          {% else %} {% if session.get("table_id") %}
+
+          <a href="/cart" class="btn btn-outline-light"> Cart </a>
+
+          {% endif %} {% endif %}
+        </div>
       </div>
     </nav>
 
-    <div class="container mt-4">{% block body %} {% endblock %}</div>
+    <main class="container mt-4 flex-grow-1">
+      {% block body %} {% endblock %}
+    </main>
+
+    <footer class="bg-dark text-light text-center py-2 mt-auto">
+      <div class="container">
+        <small>
+          QR Restaurant Ordering System • Developed by Atimaad Karamat
+        </small>
+      </div>
+    </footer>
   </body>
 </html>

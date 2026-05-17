@@ -23,7 +23,19 @@
 
       <td>₹{{ item.price }}</td>
 
-      <td>{{ item.quantity }}</td>
+      <td>
+        <div class="d-flex align-items-center gap-2">
+          <form action="/decrease_quantity/{{ item.id }}" method="POST">
+            <button class="btn btn-warning btn-sm">-</button>
+          </form>
+
+          <strong> {{ item.quantity }} </strong>
+
+          <form action="/increase_quantity/{{ item.id }}" method="POST">
+            <button class="btn btn-success btn-sm">+</button>
+          </form>
+        </div>
+      </td>
 
       <td>₹{{ item.subtotal }}</td>
 
