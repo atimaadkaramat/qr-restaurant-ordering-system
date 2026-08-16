@@ -116,36 +116,35 @@
             <div class="col-md-8">
               <select name="status" class="form-select">
                 <option value="Pending">Pending</option>
-
                 <option value="Preparing">Preparing</option>
-
                 <option value="Ready">Ready</option>
-
                 <option value="Completed">Completed</option>
               </select>
             </div>
 
             <div class="col-md-4">
-              <button class="btn btn-dark w-100">Update</button>
+              <button type="submit" class="btn btn-dark w-100">Update</button>
             </div>
-            {% if data.order['status'] == "Completed" %}
-
-            <form
-              action="/delete_order/{{ data.order['id'] }}"
-              method="POST"
-              class="mt-2"
-            >
-              <button
-                class="btn btn-outline-danger w-100"
-                onclick="return confirm('Clear this order?');"
-              >
-                Clear Order
-              </button>
-            </form>
-
-            {% endif %}
           </div>
         </form>
+
+        {% if data.order['status'] == "Completed" %}
+
+        <form
+          action="/delete_order/{{ data.order['id'] }}"
+          method="POST"
+          class="mt-2"
+        >
+          <button
+            type="submit"
+            class="btn btn-outline-danger w-100"
+            onclick="return confirm('Clear this order?');"
+          >
+            Clear Order
+          </button>
+        </form>
+
+        {% endif %}
       </div>
     </div>
   </div>

@@ -80,11 +80,13 @@ def delete_order(order_id):
 
     conn = get_db_connection()
 
+    # Delete the items belonging to this order first
     conn.execute("""
         DELETE FROM order_items
         WHERE order_id = ?
     """, (order_id,))
 
+    # Then delete the order itself
     conn.execute("""
         DELETE FROM orders
         WHERE id = ?
