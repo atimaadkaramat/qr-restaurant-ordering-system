@@ -2,6 +2,10 @@ from flask import Flask, render_template, request, redirect, session, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 
+# AI assistance: OpenAI ChatGPT was used during development for code
+# explanations, debugging, implementation guidance, and UI refinement.
+# The final implementation was reviewed, tested, and integrated by Atimaad Karamat.
+
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
@@ -130,6 +134,7 @@ def tables():
             SELECT *
             FROM orders
             WHERE table_number = ?
+              AND status != 'Completed'
             ORDER BY created_at DESC
             LIMIT 1
         """, (table_number,)).fetchone()
@@ -138,11 +143,8 @@ def tables():
         status = "Available"
 
         if latest_order:
-
-            if latest_order["status"] != "Completed":
-
-                occupied = True
-                status = latest_order["status"]
+            occupied = True
+            status = latest_order["status"]
 
         tables.append({
             "table_number": table_number,
@@ -237,7 +239,7 @@ def delete_item(item_id):
     conn.commit()
     conn.close()
 
-    return redirect("/admin")
+    return redirect("/edit_menu")
 
 @app.route("/add_to_cart", methods=["POST"])
 def add_to_cart():
@@ -407,7 +409,20 @@ def admin():
 @app.route("/update_status/<int:order_id>", methods=["POST"])
 def update_status(order_id):
 
+    if "admin_id" not in session:
+        return redirect("/login")
+
     status = request.form.get("status")
+
+    allowed_statuses = {
+        "Pending",
+        "Preparing",
+        "Ready",
+        "Completed"
+    }
+
+    if status not in allowed_statuses:
+        return redirect("/admin")
 
     conn = get_db_connection()
 
