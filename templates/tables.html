@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<h1 class="mb-5">
+    Restaurant Tables
+</h1>
+
+<div class="row">
+
+    {% for table in tables %}
+
+    <div class="col-lg-4 col-md-6 mb-4">
+
+        <div class="card shadow-sm border-0 h-100">
+
+            <div class="card-body text-center">
+
+                <h3 class="mb-3">
+                    Table {{ table.table_number }}
+                </h3>
+
+                <img
+                    src="{{ url_for('static', filename=table.qr_image) }}"
+                    class="img-fluid mb-4"
+                    style="max-width: 200px;"
+                >
+
+                {% if table.occupied %}
+
+                    <span class="badge bg-danger fs-6 mb-3">
+                        Occupied
+                    </span>
+
+                    <p>
+
+                        Status:
+                        <strong>
+                            {{ table.status }}
+                        </strong>
+
+                    </p>
+
+                {% else %}
+
+                    <span class="badge bg-success fs-6 mb-3">
+                        Available
+                    </span>
+
+                {% endif %}
+
+                <div>
+
+                    <a
+                        href="/table/{{ table.table_number }}"
+                        class="btn btn-outline-dark btn-sm"
+                    >
+                        Open Table
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

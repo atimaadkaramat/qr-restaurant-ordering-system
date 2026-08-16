@@ -112,6 +112,50 @@ def clear_orders():
 
     return redirect("/admin")
 
+@app.route("/tables")
+def tables():
+
+    if "admin_id" not in session:
+        return redirect("/login")
+
+    conn = get_db_connection()
+
+    tables = []
+
+    for table_number in range(1, 11):
+
+        latest_order = conn.execute("""
+            SELECT *
+            FROM orders
+            WHERE table_number = ?
+            ORDER BY created_at DESC
+            LIMIT 1
+        """, (table_number,)).fetchone()
+
+        occupied = False
+        status = "Available"
+
+        if latest_order:
+
+            if latest_order["status"] != "Completed":
+
+                occupied = True
+                status = latest_order["status"]
+
+        tables.append({
+            "table_number": table_number,
+            "occupied": occupied,
+            "status": status,
+            "qr_image": f"qr/table_{table_number}.png"
+        })
+
+    conn.close()
+
+    return render_template(
+        "tables.html",
+        tables=tables
+    )
+
 @app.route("/logout")
 def logout():
 
